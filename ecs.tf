@@ -58,3 +58,5 @@ resource "aws_ecs_service" "main" {
 
   depends_on = [aws_alb_listener.http, aws_iam_role_policy.ecs_task_execution_role]
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------
