@@ -1,7 +1,4 @@
 # =========| VPC |=========
-
-# Create VPC
-# terraform aws create vpc
 data "aws_availability_zones" "available" {}
 
 resource "aws_vpc" "vpc" {
@@ -13,8 +10,8 @@ resource "aws_vpc" "vpc" {
     Name    = "${var.environment}-vpc"
   }
 }
-
 # ============================
+
 
 # =========| INTERNET GATEWAY |=========
 
@@ -27,18 +24,16 @@ resource "aws_internet_gateway" "internet-gateway" {
     Name    = "Demo Internet Gateway"
   }
 }
-
 # ======================================
 
 
 
 # =========| ROUTE TABLES |=========
-
 resource "aws_route_table" "public-route-table" {
   vpc_id       = aws_vpc.vpc.id
 
   route {
-    cidr_block = var.default-cidr #0.0.0.0/16
+    cidr_block = var.default-cidr #0.0.0.0/0
     gateway_id = aws_internet_gateway.internet-gateway.id
   }
 
@@ -47,7 +42,7 @@ resource "aws_route_table" "public-route-table" {
   }
 }
 
-
+# =========================================
 resource "aws_route_table" "private-route-table" {
   vpc_id            = aws_vpc.vpc.id
   count = 2
@@ -60,7 +55,6 @@ resource "aws_route_table" "private-route-table" {
     Name = "Private Route Table ${count.index + 1}"
   }
 }
-
 # ================================
 
 

@@ -15,7 +15,7 @@ resource "aws_lb" "demo" {
 
 resource "aws_alb_listener" "http" {
   load_balancer_arn  = aws_lb.demo.arn
-  port               = 80
+  port               = var.http-port
   protocol           = "HTTP"
 
   # Default return empty page with code 404

@@ -53,7 +53,7 @@ resource "aws_ecs_service" "main" {
   load_balancer {
     target_group_arn = aws_lb_target_group.asg.id
     container_name   = "first"
-    container_port   = 80
+    container_port   = var.http-port
   }
 
   depends_on = [aws_alb_listener.http, aws_iam_role_policy.ecs_task_execution_role]

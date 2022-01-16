@@ -1,25 +1,40 @@
-# =========| VARIABLES |=========
-
-variable "vpc-cidr" {
-  default      = "10.0.0.0/16"
-  description  = "VPC CIDR Block"
-  type         = string
+# =========| VARIABLES |========
+variable "http-port" {
+  type = number
+  default = 80
 }
 
-variable "vpc-cidr-0" {
-  default      = "0.0.0.0/0"
-  description  = "VPC CIDR Block 0"
-  type         = string
+variable "fargate_memory" {
+  default = 512
+}
+
+variable "fargate_cpu" {
+  default = 256
+}
+
+variable "environment" {
+  default = "dev"
+}
+
+variable "app_name" {
+  default = "hello"
+}
+
+variable "aws_account" {
+  default = "581835478100"
+}
+
+variable "aws_region" {
+  default = "eu-west-2"
 }
 
 variable "default-cidr" {
   type = string
   default = "0.0.0.0/0"
 }
-
-variable "ssh-location" {
-  default      = "0.0.0.0/0"
-  description  = "IP Address that can SSH into the EC2 Instance"
+variable "vpc-cidr" {
+  default      = "10.0.0.0/16"
+  description  = "VPC CIDR Block"
   type         = string
 }
 
@@ -33,37 +48,8 @@ locals {
   repository_name = format("%s-%s", var.app_name, var.environment)
 }
 
-
-
-variable "fargate_memory" {
-  default = 512
-}
-
-variable "fargate_cpu" {
-  default = 256
-}
-
 locals {
   ecr_repository_url = format("%s:%s", "581835478100.dkr.ecr.eu-west-2.amazonaws.com/hello-dev", "nginx")
-}
-
-
-variable "environment" {
-  default = "dev"
-}
-
-
-variable "app_name" {
-  default = "hello"
-}
-
-
-variable "aws_account" {
-  default = "581835478100"
-}
-
-variable "aws_region" {
-  default = "eu-west-2"
 }
 
 variable "repo_url" {
@@ -101,11 +87,6 @@ variable "ecs_task_execution_role_name" {
   default = "TaskExRole"
 }
 
-
-# -------------------------------------------------------
-# NEW VARS
-# -------------------------------------------------------
-
 variable "public-subnet-cidr" {
   type         = list(string)
   default      = ["10.0.10.0/24", "10.0.20.0/24"]
@@ -120,9 +101,4 @@ variable "eip" {
   description = "Create EIPs with different names"
   type = list(string)
   default = ["EIP 1", "EIP 2"]
-}
-
-variable "public_subnet_rta_names" {
-  type = list(string)
-  default = [ "public-subnet-1-route-table-association", "public-subnet-route-table-association" ]
 }
