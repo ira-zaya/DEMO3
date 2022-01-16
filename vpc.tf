@@ -2,19 +2,19 @@
 
 # Create VPC
 # terraform aws create vpc
+data "aws_availability_zones" "available" {}
+
 resource "aws_vpc" "vpc" {
-  cidr_block              = "${var.vpc-cidr}"
+  cidr_block              = var.vpc-cidr
   instance_tenancy        = "default"
   enable_dns_hostnames    = true
 
   tags      = {
-    Name    = "Demo VPC"
+    Name    = "${var.environment}-vpc"
   }
 }
 
 # ============================
-
-
 
 # =========| INTERNET GATEWAY |=========
 
@@ -34,13 +34,11 @@ resource "aws_internet_gateway" "internet-gateway" {
 
 # =========| ROUTE TABLES |=========
 
-# Create Route Table and Add Public Route
-# terraform aws create route table
 resource "aws_route_table" "public-route-table" {
   vpc_id       = aws_vpc.vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.default-cidr #0.0.0.0/16
     gateway_id = aws_internet_gateway.internet-gateway.id
   }
 
@@ -49,22 +47,36 @@ resource "aws_route_table" "public-route-table" {
   }
 }
 
+
+resource "aws_route_table" "private-route-table" {
+  vpc_id            = aws_vpc.vpc.id
+  count = 2
+  route {
+    cidr_block      = var.default-cidr
+    nat_gateway_id  = element(aws_nat_gateway.nat-gateway.*.id, count.index)
+  }
+
+  tags   = {
+    Name = "Private Route Table ${count.index + 1}"
+  }
+}
+
 # ================================
 
 
 
-# =========| ROUTE TABLE ASSOCIATIONS |=========
+# =========| ROUTE TABLE ASSOCIATIONS |===========
 
-# Associate Public Subnet 1 to "Public Route Table"
-# terraform aws associate subnet with route table
-resource "aws_route_table_association" "public-subnet-1-route-table-association" {
-  subnet_id           = aws_subnet.public-subnet-1.id
+resource "aws_route_table_association" "public-subnet-route-table-association" {
+  count = 2
+  subnet_id           = element(aws_subnet.public-subnet.*.id, count.index)
   route_table_id      = aws_route_table.public-route-table.id
 }
 
-resource "aws_route_table_association" "public-subnet-2-route-table-association" {
-  subnet_id           = aws_subnet.public-subnet-2.id
-  route_table_id      = aws_route_table.public-route-table.id
+resource "aws_route_table_association" "private-subnet-route-table-association" {
+  count = 2
+  subnet_id           = element(aws_subnet.private-subnet.*.id, count.index)
+  route_table_id      = element(aws_route_table.private-route-table.*.id, count.index)
 }
 
-# ==============================================
+# =================================================

@@ -12,28 +12,9 @@ variable "vpc-cidr-0" {
   type         = string
 }
 
-variable "public-subnet-1-cidr" {
-  default      = "10.0.10.0/24"
-  description  = "Public Subnet 1 CIDR Block"
-  type         = string
-}
-
-variable "public-subnet-2-cidr" {
-  default      = "10.0.20.0/24"
-  description  = "Public Subnet 2 CIDR Block"
-  type         = string
-}
-
-variable "private-subnet-1-cidr" {
-  default      = "10.0.11.0/24"
-  description  = "Private Subnet 1 CIDR Block"
-  type         = string
-}
-
-variable "private-subnet-2-cidr" {
-  default      = "10.0.21.0/24"
-  description  = "Private Subnet 2 CIDR Block"
-  type         = string
+variable "default-cidr" {
+  type = string
+  default = "0.0.0.0/0"
 }
 
 variable "ssh-location" {
@@ -47,22 +28,6 @@ variable "server_port" {
   description = "The port the server will use for HTTP requests"
   type        = number
 }
-
-variable "eip" {
-  description = "Create EIPs with different names"
-  type = list(string)
-  default = ["EIP 1", "EIP 2"]
-}
-# =================================
-
-# variable "" {
-#   default = ["NAT Gateway public subnet 1", "NAT Gateway public subnet 2"]
-
-# }
-
-# variable "public_subnet" {
-
-# }
 
 locals {
   repository_name = format("%s-%s", var.app_name, var.environment)
@@ -134,4 +99,30 @@ variable "ecs_task_role_name" {
 
 variable "ecs_task_execution_role_name" {
   default = "TaskExRole"
+}
+
+
+# -------------------------------------------------------
+# NEW VARS
+# -------------------------------------------------------
+
+variable "public-subnet-cidr" {
+  type         = list(string)
+  default      = ["10.0.10.0/24", "10.0.20.0/24"]
+}
+
+variable "private-subnet-cidr" {
+  type         = list(string)
+  default      = ["10.0.11.0/24", "10.0.21.0/24"]
+}
+
+variable "eip" {
+  description = "Create EIPs with different names"
+  type = list(string)
+  default = ["EIP 1", "EIP 2"]
+}
+
+variable "public_subnet_rta_names" {
+  type = list(string)
+  default = [ "public-subnet-1-route-table-association", "public-subnet-route-table-association" ]
 }

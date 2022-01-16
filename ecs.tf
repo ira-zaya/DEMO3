@@ -46,7 +46,7 @@ resource "aws_ecs_service" "main" {
 
   network_configuration {
     security_groups  = [aws_security_group.alb-security-group.id]
-    subnets          = ["${aws_subnet.private-subnet-1.id}", "${aws_subnet.private-subnet-2.id}"]
+    subnets          = ["${aws_subnet.private-subnet[0].id}", "${aws_subnet.private-subnet[1].id}"]
     assign_public_ip = true
   }
 
