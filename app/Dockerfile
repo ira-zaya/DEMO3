@@ -1,10 +1,11 @@
+
 FROM ubuntu:16.04
 
 RUN apt-get -y update
 RUN apt-get -y install apache2
 
-RUN echo 'Hello World from AWS ECS!' > /var/www/html/index.html
+COPY index.html /var/www/html/index.html
 
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 
-CMD ["/usr/sbin/apache2ctl", "-D","FOREGROUND"]
 EXPOSE 80
